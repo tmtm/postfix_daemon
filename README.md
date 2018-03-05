@@ -1,8 +1,6 @@
 # PostfixDaemon
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/postfix_daemon`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Postfixのデーモンプログラムを作るためのライブラリです。
 
 ## Installation
 
@@ -22,14 +20,50 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+プログラムを書きます。
 
-## Development
+入力を大文字に変換して返すプログラムの例:
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+```ruby
+#!/path/to/ruby
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+require 'postfix_daemon'
 
-## Contributing
+# エラー終了してもどこにも出力されないのでリダイレクトしといた方がよさそう
+$stderr.reopen("/tmp/error.log", "a+")
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/postfix_daemon.
+PostfixDaemon.start do |socket, addr|
+  socket.puts "you are #{addr.inspect}"
+  while s = socket.gets
+    s = s.force_encoding("utf-8").scrub
+    socket.puts s.upcase
+  end
+end
+```
+
+プログラムを /usr/lib/postfix/sbin に置きます。
+
+```
+# cp hoge.rb /usr/lib/postfix/sbin/hoge
+# chmod +x /usr/lib/postfix/sbin/hoge
+```
+
+master.cf に追加:
+
+```
+12345   inet   -   -   -   -   -   hoge
+```
+
+postfix reload
+
+```
+# postfix reload
+```
+
+```
+% nc localhost 12345
+you are #<Addrinfo: 127.0.0.1:59312 TCP>
+abcdefg
+ABCDEFG
+^C
+```
