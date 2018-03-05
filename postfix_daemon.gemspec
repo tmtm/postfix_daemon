@@ -6,25 +6,16 @@ require "postfix_daemon/version"
 Gem::Specification.new do |spec|
   spec.name          = "postfix_daemon"
   spec.version       = PostfixDaemon::VERSION
+  spec.licenses      = ['MIT']
   spec.authors       = ["TOMITA Masahiro"]
   spec.email         = ["tommy@tmtm.org"]
 
-  spec.summary       = %q{TODO: Write a short summary, because RubyGems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = 'Postfix daemon'
+  spec.description   = 'Postfix daemon'
+  spec.homepage      = 'https://github.com/tmtm/postfix_daemon'
 
-  # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
-  # to allow pushing to a single host or delete this section to allow pushing to any host.
-  if spec.respond_to?(:metadata)
-    spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
-  else
-    raise "RubyGems 2.0 or newer is required to protect against " \
-      "public gem pushes."
-  end
+  spec.files         = %w(README.md sample/postfix_daemon-sample.rb lib/postfix_daemon.rb lib/postfix_daemon/version.rb)
 
-  spec.files         = `git ls-files -z`.split("\x0").reject do |f|
-    f.match(%r{^(test|spec|features)/})
-  end
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
